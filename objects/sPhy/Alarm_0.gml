@@ -1,0 +1,1 @@
+global.phy = 0;

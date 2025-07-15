@@ -1,0 +1,11 @@
+{
+  "scena_1": [
+    { "personaje": "Prota", "texto": "¿Qué está pasando aquí?" },
+    { "personaje": "NPC1",  "texto": "Bienvenido al pueblo, forastero." },
+    { "personaje": "Prota", "texto": "Gracias... ¿Tienes algo de comida?" }
+  ],
+  "scena_2": [
+    { "personaje": "NPC2",  "texto": "Cuidado con las bestias en el bosque." },
+    { "personaje": "Prota", "texto": "Lo tendré en cuenta, gracias." }
+  ]
+}

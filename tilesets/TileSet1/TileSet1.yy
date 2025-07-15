@@ -1,0 +1,44 @@
+{
+  "$GMTileSet":"v1",
+  "%Name":"TileSet1",
+  "autoTileSets":[
+    {"$GMAutoTileSet":"","%Name":"autotile_1","closed_edge":false,"name":"autotile_1","resourceType":"GMAutoTileSet","resourceVersion":"2.0","tiles":[
+        0,27,27,29,27,29,29,35,27,28,27,29,35,33,34,22,29,32,21,20,29,24,30,6,19,21,14,27,13,7,6,1,3,3,28,33,
+        34,31,32,25,19,35,29,34,33,32,31,
+      ],},
+  ],
+  "macroPageTiles":{
+    "SerialiseHeight":130,
+    "SerialiseWidth":8,
+    "TileCompressedData":[-1024,0,16,29,30,0,29,30,0,29,30,37,38,0,37,38,0,37,38,],
+    "TileDataFormat":1,
+  },
+  "name":"TileSet1",
+  "out_columns":266,
+  "out_tilehborder":0,
+  "out_tilevborder":0,
+  "parent":{
+    "name":"older",
+    "path":"folders/Tile Sets/older.yy",
+  },
+  "resourceType":"GMTileSet",
+  "resourceVersion":"2.0",
+  "spriteId":{
+    "name":"tilesetdark",
+    "path":"sprites/tilesetdark/tilesetdark.yy",
+  },
+  "spriteNoExport":false,
+  "textureGroupId":{
+    "name":"Default",
+    "path":"texturegroups/Default",
+  },
+  "tileAnimationFrames":[],
+  "tileAnimationSpeed":15.0,
+  "tileHeight":3,
+  "tilehsep":0,
+  "tilevsep":0,
+  "tileWidth":3,
+  "tilexoff":0,
+  "tileyoff":0,
+  "tile_count":70756,
+}

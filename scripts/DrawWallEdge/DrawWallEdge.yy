@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"DrawWallEdge",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"DrawWallEdge",
+  "parent":{
+    "name":"Scripts",
+    "path":"folders/Scripts.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}
