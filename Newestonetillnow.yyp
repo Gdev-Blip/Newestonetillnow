@@ -237,9 +237,9 @@
   "resourceType":"GMProject",
   "resourceVersion":"2.0",
   "RoomOrderNodes":[
-    {"roomId":{"name":"Room7","path":"rooms/Room7/Room7.yy",},},
-    {"roomId":{"name":"rm2","path":"rooms/rm2/rm2.yy",},},
     {"roomId":{"name":"rm1","path":"rooms/rm1/rm1.yy",},},
+    {"roomId":{"name":"rm2","path":"rooms/rm2/rm2.yy",},},
+    {"roomId":{"name":"Room7","path":"rooms/Room7/Room7.yy",},},
     {"roomId":{"name":"Room10","path":"rooms/Room10/Room10.yy",},},
     {"roomId":{"name":"Room10_1","path":"rooms/Room10_1/Room10_1.yy",},},
     {"roomId":{"name":"Room9","path":"rooms/Room9/Room9.yy",},},
