@@ -1,4 +1,4 @@
-if (!ya_cambie && place_meeting(x, y, oPlayer) && !instance_exists(ofade)) {
+if (!ya_cambie && place_meeting(x, y, oPlayer) && !instance_exists(cFade)) {
     ya_cambie = true;
     with (oPlayer) {
         vx = 0;

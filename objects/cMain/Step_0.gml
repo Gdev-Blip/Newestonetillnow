@@ -7,7 +7,3 @@ if (global.mouse_gui_delay > 0) {
 if (room = selecChar1) {
     layer_set_visible("menu", false);
 }
-if (window_get_width() != winw || window_get_height() != winh)
-{
-    display_set_gui_maximize();
-}

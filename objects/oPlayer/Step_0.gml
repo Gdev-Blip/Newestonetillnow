@@ -1,4 +1,4 @@
-/// @description Movimiento completo con wall slide v3 (anti-trap, salto limpio, caída si no hay input)
+/// @description Logic
 
 // === INPUT ===
 var izq = keyboard_check(ord("A"));
@@ -42,9 +42,10 @@ if (saltar && jumps > 0) {
 }
 
 
-if (en_suelo) {
+if (en_suelo or tocando_derecha or tocando_izquierda) {
     jumps = max_jumps;
 }
+
 
 // === GRAVEDAD ===
 if (!en_suelo) {
@@ -326,42 +327,15 @@ function parallax_layer(layer_name, factor) {
     }
 }
 
-if (!variable_global_exists("cam_x")) global.cam_x = x;
-if (!variable_global_exists("cam_y")) global.cam_y = y;
-if (!variable_global_exists("cam_target_x")) global.cam_target_x = global.cam_x;
-if (!variable_global_exists("cam_target_y")) global.cam_target_y = global.cam_y;
-if (!variable_global_exists("cam_catching_up")) global.cam_catching_up = false;
-if (!variable_global_exists("shake_offset_x")) global.shake_offset_x = 0;
-if (!variable_global_exists("shake_offset_y")) global.shake_offset_y = 0;
-
-var vw = camera_get_view_width(view_camera[0]);
-var vh = camera_get_view_height(view_camera[0]);
-var rw = room_width;
-var rh = room_height;
-var anticipation_margin = 160;
-
-var shake_offset_x = global.shake_offset_x;
-var shake_offset_y = global.shake_offset_y;
-
-var player_inside = (x >= global.cam_x) && (x <= global.cam_x + vw) && (y >= global.cam_y) && (y <= global.cam_y + vh);
-if (!global.cam_catching_up && !player_inside) {
-    global.cam_catching_up = true;
-    if (x > global.cam_x + vw) global.cam_target_x = clamp(x - anticipation_margin, 0, rw - vw);
-    else if (x < global.cam_x) global.cam_target_x = clamp(x + anticipation_margin - vw, 0, rw - vw);
-    else global.cam_target_x = global.cam_x;
-    if (y > global.cam_y + vh) global.cam_target_y = clamp(y - anticipation_margin, 0, rh - vh);
-    else if (y < global.cam_y) global.cam_target_y = clamp(y + anticipation_margin - vh, 0, rh - vh);
-    else global.cam_target_y = global.cam_y;
+if (!variable_global_exists("cam_x")) {
+    global.cam_x = x;
+    global.cam_y = y;
 }
-if (global.cam_catching_up) {
-    var lerp_speed = 0.7;
-    global.cam_x = lerp(global.cam_x, global.cam_target_x, lerp_speed);
-    global.cam_y = lerp(global.cam_y, global.cam_target_y, lerp_speed);
-    if (abs(global.cam_x - global.cam_target_x) < 1 && abs(global.cam_y - global.cam_target_y) < 1) {
-        global.cam_x = global.cam_target_x;
-        global.cam_y = global.cam_target_y;
-        global.cam_catching_up = false;
-    }
-}
-camera_set_view_pos(view_camera[0], global.cam_x + shake_offset_x, global.cam_y + shake_offset_y);
-global.vidaplayer = vida;
+var follow_x = x - (camera_get_view_width(view_camera[0]) / 2) + shake_offset_x;
+var follow_y = y - (camera_get_view_height(view_camera[0]) / 2) + shake_offset_y;
+
+// Lerp hacia el objetivo, entre 0 (no se mueve) y 1 (se mueve instantáneo)
+global.cam_x = lerp(global.cam_x, follow_x, 0.1);
+global.cam_y = lerp(global.cam_y, follow_y, 0.1);
+
+camera_set_view_pos(view_camera[0], global.cam_x, global.cam_y);global.vidaplayer = vida;

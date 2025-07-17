@@ -41,5 +41,5 @@
     "path":"sprites/sWallPrecise/sWallPrecise.yy",
   },
   "spriteMaskId":null,
-  "visible":true,
+  "visible":false,
 }
