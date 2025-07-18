@@ -3,6 +3,9 @@ dir_intencion = 0; // Dirección intencionada: -1 (izq), 1 (der), 0 (neutral)
 // CREATE EVENT (oPlayer)
 // ===================
 // --- FÍSICA & MOVIMIENTO ---
+accel = 0.5
+accel_final = 0
+accel_max = 50
 xspd               = 0;
 yspd               = 0;
 limite             = 9;
@@ -72,9 +75,6 @@ shake_intensity    = 2;
 shake_offset_x     = 5;
 shake_offset_y     = 5;
 flash_alpha        = 0;
-/// Create Event
-max_jumps = 2;   // Número máximo de saltos (1 salto normal + 1 doble salto)
-jumps     = max_jumps;
 
 // --- SUPER ATAQUE (click derecho) ---
 super_cooldown     = 0;
@@ -149,4 +149,40 @@ Salto = 12
 
 LimiteA = 2 //Limite de altura para subir escalera
 /// @desc Lists, structs and functions
+/// oPlayer: Movimiento con inercia, slopes, wall slide y doble salto mejorado
 
+/// oPlayer: Movimiento con inercia, slopes, wall slide y doble salto mejorado
+// --- Create Event de oPlayer
+// Guardamos alto del sprite para no recalcular cada frame
+sprite_h_original = sprite_get_height(sprite_index);
+// --- Create Event ---
+/// Inicialización de variables de movimiento
+hsp = 0;                     // velocidad horizontal actual
+vsp = 0;                     // velocidad vertical actual
+
+// Configuración de físicas
+gravity         = 0.685;       // aceleración de la gravedad
+
+move_accel      = 0.75;       // aceleración al andar
+air_accel       = 0.1;       // aceleración en el aire
+friction        = 0.85;       // fricción al soltar tecla en suelo (mayor para mejor detención)
+max_hspeed      = 4.5;         // velocidad horizontal máxima
+
+// Salto y doble salto
+jump_speed         = -9.5;    // velocidad inicial de salto principal
+double_jump_speed  = -10;    // velocidad de salto secundario (doble salto)
+coyote_time        = 10;      // cuadros de coyote para saltar tras salir de suelo
+jump_grace         = 6;      // cuadros de gracia para buffer de salto
+max_jumps          = 2;      // número total de saltos disponibles
+
+// Estados internos
+direction_input = 0;         // -1=izquierda, 1=derecha, 0=sin input
+coyote_timer     = 0;         // contador de coyote
+jump_buffer      = 0;         // buffer de input de salto
+jumps_done       = 0;         // saltos realizados en aire
+on_wall_slide    = false;     // flag de wall slide
+wall_slide_dir   = 0;         // dirección de pared actual (1=derecha, -1=izquierda)
+wall_slide_speed = 2;         // velocidad de deslizado en pared
+
+// Slope handling
+slope_climb      = 8;         // altura máxima para escalar pendiente (píxeles)

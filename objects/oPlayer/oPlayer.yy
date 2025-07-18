@@ -41,8 +41,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_jugador",
-    "path":"sprites/spr_jugador/spr_jugador.yy",
+    "name":"sRunG",
+    "path":"sprites/sRunG/sRunG.yy",
   },
   "spriteMaskId":null,
   "visible":true,

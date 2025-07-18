@@ -22,7 +22,7 @@ alarm[0] = 20; // 60 steps = 1 segundo si estás a 60 FPS
 var knockback_strength_x = 9;
 var knockback_strength_y = -6;
 
-p.xspd += -oPlayer.image_xscale * knockback_strength_x;
+p.hsp += -oPlayer.image_xscale * knockback_strength_x;
 p.yspd = knockback_strength_y;
 
         p.vida -= dmg;

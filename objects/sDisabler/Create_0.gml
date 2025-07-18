@@ -1,8 +1,8 @@
 
 // 2) Variables para “guardar” el estado del jugador
-saved_limite        = 0;
+saved_accel_max        = 0;
 saved_salto_fuerza  = 0;
-saved_aceleracion   = 0;
+saved_accel   = 0;
 saved_puede_dashear = false;
 saved_puede_tp      = false;
 

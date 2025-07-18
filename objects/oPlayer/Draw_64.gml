@@ -16,4 +16,3 @@ var line_h = 20; // altura entre líneas
 // draw_set_color(c_white);
 
 draw_text(x,y,fps)
-draw_text(16, 16, "Wall Slide: " + string(en_wall_slide) + " | Timer: " + string(wall_slide_timer));

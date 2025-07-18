@@ -18,10 +18,10 @@
 
     if (en_suelo) {
         switch(combo) {
-            case 0: xspd -= retroceso_1 * image_xscale; break;
-            case 1: xspd -= retroceso_2 * image_xscale; break;
-            case 2: xspd -= retroceso_3 * image_xscale; break;
-            case 3: xspd -= retroceso_4 * image_xscale; break;
+            case 0: hsp -= retroceso_1 * image_xscale; break;
+            case 1: hsp -= retroceso_2 * image_xscale; break;
+            case 2: hsp -= retroceso_3 * image_xscale; break;
+            case 3: hsp -= retroceso_4 * image_xscale; break;
         }
     }
 
