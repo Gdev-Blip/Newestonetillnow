@@ -1,13 +1,13 @@
 if place_meeting(x,y,oPlayer) {
    with(oPlayer) {
-	  accel_max        = 3;
-            salto_fuerza  = -11;
-            accel   = 0.4;
+	  max_hspeed      = 3;
+            jump_speed = -11;
+            move_accel   = 0.4;
             puede_dashear = false;
             puede_tp      = false;
 			
-	if accel_max > 3 {
-	accel_max = 3;	
+	if max_hspeed > 3 {
+	max_hspeed = 3;	
 	}
 	if hsp > 3 {
 		hsp = 3
@@ -16,9 +16,9 @@ if place_meeting(x,y,oPlayer) {
    } else {
 	   with(oPlayer) {
 		  
-	  accel_max = max_hspeed;
-            salto_fuerza =  originfuerzasalto
-            accel   = originaccel
+	  originmaxaccel = max_hspeed;
+            originfuerzasalto =  jump_speed
+            originaccel   = accel
 			puede_tp = true
 
    } }

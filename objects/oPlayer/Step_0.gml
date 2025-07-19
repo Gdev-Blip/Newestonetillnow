@@ -1,83 +1,79 @@
-/// @description Logic
-
-// === INPUT ===
-var izq = keyboard_check(ord("A"));
-var der = keyboard_check(ord("D"));
-var saltar = keyboard_check_pressed(vk_space);
-
-if (keyboard_check_pressed(ord("D"))) dir_intencion = 1;
-if (keyboard_check_pressed(ord("A"))) dir_intencion = -1;
 
 // --- Step Event ---
+/// 0) Registrar flip previo
+previous_direction = image_xscale;
+
 /// 1) Leer input de movimiento y salto
+var input_right    = keyboard_check(vk_right) || keyboard_check(ord("D"));
+var input_left     = keyboard_check(vk_left)  || keyboard_check(ord("A"));
+direction_input    = input_right - input_left;
 
-direction_input = der - izq;
-
-// Buffer de salto (teclas W, flecha arriba o espacio)
+// Buffer de salto (W, flecha arriba o espacio)
 if (keyboard_check_pressed(ord("W")) || keyboard_check_pressed(vk_up) || keyboard_check_pressed(vk_space)) {
-    jump_buffer = jump_grace;
+    jump_buffer     = jump_grace;
 } else if (jump_buffer > 0) {
-    jump_buffer -= 1;
+    jump_buffer     -= 1;
 }
-
 
 /// 2) Gestionar coyote time y reset de saltos al tocar suelo
-var on_ground = place_meeting(x, y + 1, oWall);
+var on_ground      = place_meeting(x, y + 1, oWall);
 if (on_ground) {
-    coyote_timer = coyote_time;
-    jumps_done = 0;
+    coyote_timer    = coyote_time;
+    jumps_done      = 0;
 } else if (coyote_timer > 0) {
-    coyote_timer -= 1;
+    coyote_timer    -= 1;
 }
 
-
-/// 3) Movimiento horizontal con inercia y fricción en suelo
+/// 3) Movimiento horizontal con respuesta instantánea en aire
 if (direction_input != 0) {
     var accel = on_ground ? move_accel : air_accel;
+    // al cambiar de sentido en aire, resetear hsp para giro inmediato
+    if (!on_ground && sign(hsp) != 0 && sign(direction_input) != sign(hsp)) {
+        hsp = 0;
+    }
     hsp += accel * direction_input;
 } else if (on_ground) {
+    // fricción solo en suelo
     if (abs(hsp) < friction) hsp = 0;
     else hsp -= friction * sign(hsp);
 }
 hsp = clamp(hsp, -max_hspeed, max_hspeed);
 
-
 /// 4) Aplicar gravedad y limitar caída
-vsp += gravity
-
+vsp = min(vsp + gravity, max_fall_speed);
 
 /// 5) Saltar y doble salto con coyote time y buffer
 if (jump_buffer > 0 && (coyote_timer > 0 || jumps_done < max_jumps)) {
-    if (jumps_done == 0) vsp = jump_speed;
-    else vsp = double_jump_speed;
+    vsp = jumps_done == 0 ? jump_speed : double_jump_speed;
     jump_buffer = 0;
     jumps_done += 1;
     coyote_timer = 0;
 }
 
-/// 6) Detectar entrada/salida de wall slide con empuje de salida
-// Salir de wall slide si tocando suelo, no hay pared adyacente en dir actual, o no presionando hacia la pared
+/// 6) Wall slide: entrada y salida de estado
+// si estaba en wall slide, evaluar salida
 if (on_wall_slide) {
-    var exit_wall = (on_ground || !place_meeting(x + wall_slide_dir, y, oWall) || direction_input != wall_slide_dir && direction_input != 0);
-    if (exit_wall) {
-        // Empujar ligeramente en dirección de input para liberar posición
-        hsp = direction_input * (max_hspeed * 0.5);
+    var exit_cond = on_ground || !place_meeting(x + wall_slide_dir, y, oWall) || direction_input != wall_slide_dir;
+    if (exit_cond) {
+        // nudge de salida
+        x += direction_input;
+        hsp = direction_input * max_hspeed;
         on_wall_slide = false;
         wall_slide_dir = 0;
     }
 }
-// Entrar en wall slide si en aire, pared adyacente y presionando hacia la pared
+// entrar en wall slide si en aire, con pared y presionando hacia ella
 if (!on_ground && direction_input != 0 && place_meeting(x + direction_input, y, oWall)) {
     on_wall_slide = true;
     wall_slide_dir = direction_input;
 }
-// Si en wall slide, forzar caída controlada y anular inercia horizontal
+// forzar caída en wall slide
 if (on_wall_slide) {
     vsp = wall_slide_speed;
     hsp = 0;
 }
 
-/// 7) Resolver colisiones y slopes
+/// 7) Resolver colisiones y pendientes
 function MoveHorizontal() {
     if (hsp == 0) return;
     var step = sign(hsp);
@@ -88,24 +84,13 @@ function MoveHorizontal() {
             var climbed = false;
             for (var j = 1; j <= slope_climb; j++) {
                 if (!place_meeting(x + step, y - j, oWall)) {
-                    x += step;
-                    y -= j;
-                    climbed = true;
-                    break;
+                    x += step; y -= j; climbed = true; break;
                 }
             }
-            if (!climbed) {
-                hsp = 0;
-                break;
-            }
+            if (!climbed) { hsp = 0; break; }
         }
     }
 }
-/// 8) Animación y escala del sprite según movimiento
-if (vsp < 0) sprite_index = sRunG;
-//else if (vsp > 0) sprite_index = sFallG;
-else if (abs(hsp) > 0.2) sprite_index = sRunG;
-else sprite_index = sIdleG;
 
 function MoveVertical() {
     if (vsp == 0) return;
@@ -115,8 +100,7 @@ function MoveVertical() {
             y += step;
         } else {
             if (vsp > 0) jumps_done = 0;
-            vsp = 0;
-            break;
+            vsp = 0; break;
         }
     }
 }
@@ -124,7 +108,20 @@ function MoveVertical() {
 MoveHorizontal();
 MoveVertical();
 
+/// 8) Animación y flip de sprite
 
+// flip de sprite basado en hsp
+if (hsp != 0) image_xscale = sign(hsp);
+
+/// 9) Corregir embed al flipear
+if (image_xscale != previous_direction) {
+    var fix_count = 0;
+    while (place_meeting(x, y, oWall) && fix_count < 5) {
+        x += image_xscale; fix_count += 1;
+    }
+}
+
+// fin del Step Event
 
 if (keyboard_check_pressed(ord("R")) && !tp_active && tp_cooldown <= 0 && puede_tp) {
     tp_active  = true;

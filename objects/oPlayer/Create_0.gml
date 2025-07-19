@@ -155,34 +155,49 @@ LimiteA = 2 //Limite de altura para subir escalera
 // --- Create Event de oPlayer
 // Guardamos alto del sprite para no recalcular cada frame
 sprite_h_original = sprite_get_height(sprite_index);
+/// oPlayer: Movimiento con inercia, slopes, wall slide y doble salto ajustable con factor de velocidad
+/// oPlayer: Movimiento con inercia ajustado para aire responsivo, slopes, wall slide y doble salto
+/// oPlayer: Movimiento con inercia ajustado para aire responsivo, slopes, wall slide y doble salto con corrección de embed
+
 // --- Create Event ---
+/// Factor global para ajustar todas las velocidades en el juego (1 = normal, >1 = más rápido)
+speed_factor        = 1;   // velocidad base del juego (ajusta este valor)
+
 /// Inicialización de variables de movimiento
-hsp = 0;                     // velocidad horizontal actual
-vsp = 0;                     // velocidad vertical actual
+hsp                 = 0;   // velocidad horizontal actual
+vsp                 = 0;   // velocidad vertical actual
 
 // Configuración de físicas
-gravity         = 0.685;       // aceleración de la gravedad
+gravity             = 0.6  * speed_factor;   // gravedad
+max_fall_speed      = 12   * speed_factor;   // velocidad máxima de caída
 
-move_accel      = 0.75;       // aceleración al andar
-air_accel       = 0.1;       // aceleración en el aire
-friction        = 0.85;       // fricción al soltar tecla en suelo (mayor para mejor detención)
-max_hspeed      = 4.5;         // velocidad horizontal máxima
+// Aceleración y fricción
+move_accel          = 0.5  * speed_factor;   // aceleración en suelo
+air_accel           = move_accel;           // aceleración en aire igual a suelo para mayor control
+friction            = 0.4  * speed_factor;   // fricción en suelo al soltar tecla
+max_hspeed          = 5    * speed_factor;   // velocidad horizontal máxima
 
 // Salto y doble salto
-jump_speed         = -9.5;    // velocidad inicial de salto principal
-double_jump_speed  = -10;    // velocidad de salto secundario (doble salto)
-coyote_time        = 10;      // cuadros de coyote para saltar tras salir de suelo
-jump_grace         = 6;      // cuadros de gracia para buffer de salto
-max_jumps          = 2;      // número total de saltos disponibles
+jump_speed          = -10  * speed_factor;   // velocidad inicial de salto principal
+double_jump_speed   = -11  * speed_factor;   // velocidad de doble salto
+coyote_time         = 6;                    // cuadros de coyote
+jump_grace          = 6;                    // buffer de salto
+max_jumps           = 2;                    // saltos disponibles
+
+// Wall slide
+wall_slide_speed    = 2    * speed_factor;   // velocidad de deslizado en pared
+
+// Pendientes
+slope_climb         = 8;                    // altura máxima para subir pendientes
 
 // Estados internos
-direction_input = 0;         // -1=izquierda, 1=derecha, 0=sin input
-coyote_timer     = 0;         // contador de coyote
-jump_buffer      = 0;         // buffer de input de salto
-jumps_done       = 0;         // saltos realizados en aire
-on_wall_slide    = false;     // flag de wall slide
-wall_slide_dir   = 0;         // dirección de pared actual (1=derecha, -1=izquierda)
-wall_slide_speed = 2;         // velocidad de deslizado en pared
+direction_input     = 0;   // -1=izquierda,1=derecha,0=sin input
+coyote_timer        = 0;   // contador de coyote
+jump_buffer         = 0;   // buffer de salto
+jumps_done          = 0;   // saltos realizados
+on_wall_slide       = false;
+wall_slide_dir      = 0;
 
-// Slope handling
-slope_climb      = 8;         // altura máxima para escalar pendiente (píxeles)
+// Control de flip\image_xscale       = 1;   // escala inicial del sprite
+previous_direction  = image_xscale;         // para detectar cambios de flip
+
