@@ -16,12 +16,15 @@ if (keyboard_check_pressed(ord("W")) || keyboard_check_pressed(vk_up) || keyboar
 }
 
 /// 2) Gestionar coyote time y reset de saltos al tocar suelo
-var on_ground      = place_meeting(x, y + 1, oWall);
-if (on_ground) {
-    coyote_timer    = coyote_time;
-    jumps_done      = 0;
+// Línea 10
+var on_ground = place_meeting(x, y + 1, oWall) || place_meeting(x, y + 1, oWallDestroyable);
+
+// línea modificada
+if (on_ground || on_wall_slide) {
+    coyote_timer = coyote_time;
+    jumps_done   = 0;
 } else if (coyote_timer > 0) {
-    coyote_timer    -= 1;
+    coyote_timer -= 1;
 }
 
 /// 3) Movimiento horizontal con respuesta instantánea en aire
@@ -53,7 +56,8 @@ if (jump_buffer > 0 && (coyote_timer > 0 || jumps_done < max_jumps)) {
 /// 6) Wall slide: entrada y salida de estado
 // si estaba en wall slide, evaluar salida
 if (on_wall_slide) {
-    var exit_cond = on_ground || !place_meeting(x + wall_slide_dir, y, oWall) || direction_input != wall_slide_dir;
+var exit_cond = on_ground || !(place_meeting(x + wall_slide_dir, y, oWall) || place_meeting(x + wall_slide_dir, y, oWallDestroyable)) || direction_input != wall_slide_dir;
+
     if (exit_cond) {
         // nudge de salida
         x += direction_input;
@@ -63,7 +67,8 @@ if (on_wall_slide) {
     }
 }
 // entrar en wall slide si en aire, con pared y presionando hacia ella
-if (!on_ground && direction_input != 0 && place_meeting(x + direction_input, y, oWall)) {
+// Línea 34
+if (!on_ground && direction_input != 0 && (place_meeting(x + direction_input, y, oWall) || place_meeting(x + direction_input, y, oWallDestroyable))) {
     on_wall_slide = true;
     wall_slide_dir = direction_input;
 }
@@ -77,32 +82,35 @@ if (on_wall_slide) {
 function MoveHorizontal() {
     if (hsp == 0) return;
     var step = sign(hsp);
-    for (var i = 0; i < abs(hsp); i++) {
-        if (!place_meeting(x + step, y, oWall)) {
-            x += step;
-        } else {
-            var climbed = false;
-            for (var j = 1; j <= slope_climb; j++) {
-                if (!place_meeting(x + step, y - j, oWall)) {
-                    x += step; y -= j; climbed = true; break;
-                }
+// En MoveHorizontal()
+for (var i = 0; i < abs(hsp); i++) {
+    if (!(place_meeting(x + step, y, oWall) || place_meeting(x + step, y, oWallDestroyable))) {
+        x += step;
+    } else {
+        var climbed = false;
+        for (var j = 1; j <= slope_climb; j++) {
+            if (!(place_meeting(x + step, y - j, oWall) || place_meeting(x + step, y - j, oWallDestroyable))) {
+                x += step; y -= j; climbed = true; break;
             }
-            if (!climbed) { hsp = 0; break; }
         }
+        if (!climbed) { hsp = 0; break; }
     }
+}
+
 }
 
 function MoveVertical() {
     if (vsp == 0) return;
     var step = sign(vsp);
-    for (var i = 0; i < abs(vsp); i++) {
-        if (!place_meeting(x, y + step, oWall)) {
-            y += step;
-        } else {
-            if (vsp > 0) jumps_done = 0;
-            vsp = 0; break;
-        }
+for (var i = 0; i < abs(vsp); i++) {
+    if (!(place_meeting(x, y + step, oWall) || place_meeting(x, y + step, oWallDestroyable))) {
+        y += step;
+    } else {
+        if (vsp > 0) jumps_done = 0;
+        vsp = 0; break;
     }
+}
+
 }
 
 MoveHorizontal();
@@ -116,9 +124,10 @@ if (hsp != 0) image_xscale = sign(hsp);
 /// 9) Corregir embed al flipear
 if (image_xscale != previous_direction) {
     var fix_count = 0;
-    while (place_meeting(x, y, oWall) && fix_count < 5) {
-        x += image_xscale; fix_count += 1;
-    }
+    while ((place_meeting(x, y, oWall) || place_meeting(x, y, oWallDestroyable)) && fix_count < 5) {
+    x += image_xscale;
+    fix_count += 1;
+}
 }
 
 // fin del Step Event
@@ -195,8 +204,8 @@ if (dano_cooldown <= 0) {
         invulnera = true;
         VX -= 17 * image_xscale;
         alarm[0] = 50;
-        vida -= dano_recibido;
-        xspd += 8 * -image_xscale;
+        life -= dano_recibido;
+        hsp += 8 * -image_xscale;
         yspd  = -10;
         tinte_rojo = 1;
         dano_cooldown = room_speed * 0.4;
@@ -204,10 +213,10 @@ if (dano_cooldown <= 0) {
         shake_intensity = 130;
     }
     else if (place_meeting(x, y, oEnemyPhy)) and invulnera = false{
-        vida -= (dano_recibido / 4);
+        life -= (dano_recibido / 4);
         invulnera = true;
         VX -= 17 * image_xscale;
-        xspd += 13 * -image_xscale;
+        hsp += 13 * -image_xscale;
         yspd  = -13;
         tinte_rojo = 1;
         dano_cooldown = room_speed * 0.4;
@@ -238,7 +247,7 @@ if (flash_alpha > 0) {
 }
 
 // === ATAQUE ===
-if (!esta_atacando && VX == 0 && VY == 0 && !dash_en_proceso) {
+if (!esta_atacando && hsp == 0 && vsp == 0 && !dash_en_proceso) {
     sprite_index = sIdleG;
 }
 
@@ -262,7 +271,7 @@ if (is_bursting) {
         bb._direccion = dir2;
         bb.image_angle = dir2;
         audio_play_sound(shooting, 1, false);
-        xspd -= retroceso_burst * image_xscale;
+        hsp -= retroceso_burst * image_xscale;
         burst_shots_fired++;
         burst_timer = burst_interval;
     } else if (burst_shots_fired >= burst_shots) {
@@ -300,4 +309,4 @@ var follow_y = y - (camera_get_view_height(view_camera[0]) / 2) + shake_offset_y
 global.cam_x = lerp(global.cam_x, follow_x, 0.1);
 global.cam_y = lerp(global.cam_y, follow_y, 0.1);
 
-camera_set_view_pos(view_camera[0], global.cam_x, global.cam_y);global.vidaplayer = vida;
+camera_set_view_pos(view_camera[0], global.cam_x, global.cam_y);global.lifeplayer = life;

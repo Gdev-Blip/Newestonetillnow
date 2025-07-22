@@ -25,7 +25,7 @@ var knockback_strength_y = -6;
 p.hsp += -oPlayer.image_xscale * knockback_strength_x;
 p.yspd = knockback_strength_y;
 
-        p.vida -= dmg;
+        p.life -= dmg;
         p.invul_timer = room_speed * 0.3; // frames de invul
 
 

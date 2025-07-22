@@ -12,7 +12,7 @@ if (player_inst != noone) {
 /// 2) Fondo semitransparente (relleno)
 draw_set_font(fnt_hud);
 draw_set_color(make_color_rgb(0, 255, 255));
-draw_set_alpha(0.4);
+draw_set_alpha(0.2);
 draw_roundrect(hud_x, hud_y, hud_x + hud_w, hud_y + hud_h, false);
 draw_set_alpha(1);
 

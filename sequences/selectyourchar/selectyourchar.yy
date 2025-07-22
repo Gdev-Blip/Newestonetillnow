@@ -43,7 +43,7 @@
   "tracks":[
     {"$GMTextTrack":"","%Name":"fnt_ui","builtinName":0,"events":[],"inheritsTrackColour":true,"interpolation":1,"isCreationTrack":false,"keyframes":{"$KeyframeStore<AssetTextKeyframe>":"","Keyframes":[
           {"$Keyframe<AssetTextKeyframe>":"","Channels":{
-              "0":{"$AssetTextKeyframe":"","Alignment":0,"EnableEffects":false,"EnableGlow":false,"EnableOutline":false,"EnableShadow":false,"Id":{"name":"fnt_ui","path":"fonts/fnt_ui/fnt_ui.yy",},"resourceType":"AssetTextKeyframe","resourceVersion":"2.0","Text":"esta a punto de comenzar","Wrap":false,},
+              "0":{"$AssetTextKeyframe":"","Alignment":0,"EnableEffects":false,"EnableGlow":false,"EnableOutline":false,"EnableShadow":false,"Id":{"name":"fnt_hud","path":"fonts/fnt_hud/fnt_hud.yy",},"resourceType":"AssetTextKeyframe","resourceVersion":"2.0","Text":"esta a punto de comenzar","Wrap":false,},
             },"Disabled":false,"id":"3a9f5d12-0b36-4d87-93a8-7d8811fb070c","IsCreationKey":false,"Key":0.0,"Length":70.0,"resourceType":"Keyframe<AssetTextKeyframe>","resourceVersion":"2.0","Stretch":false,},
         ],"resourceType":"KeyframeStore<AssetTextKeyframe>","resourceVersion":"2.0",},"modifiers":[],"name":"fnt_ui","resourceType":"GMTextTrack","resourceVersion":"2.0","trackColour":4294068407,"tracks":[
         {"$GMColourTrack":"","%Name":"blend_multiply","builtinName":10,"events":[],"inheritsTrackColour":true,"interpolation":1,"isCreationTrack":false,"keyframes":{"$KeyframeStore<ColourKeyframe>":"","Keyframes":[
@@ -90,7 +90,7 @@
       ],"traits":0,},
     {"$GMTextTrack":"","%Name":"Text Track 1","builtinName":0,"events":[],"inheritsTrackColour":true,"interpolation":1,"isCreationTrack":false,"keyframes":{"$KeyframeStore<AssetTextKeyframe>":"","Keyframes":[
           {"$Keyframe<AssetTextKeyframe>":"","Channels":{
-              "0":{"$AssetTextKeyframe":"","Alignment":0,"EnableEffects":false,"EnableGlow":false,"EnableOutline":false,"EnableShadow":false,"Id":{"name":"fnt_ui","path":"fonts/fnt_ui/fnt_ui.yy",},"resourceType":"AssetTextKeyframe","resourceVersion":"2.0","Text":"Tu aventura","Wrap":false,},
+              "0":{"$AssetTextKeyframe":"","Alignment":0,"EnableEffects":false,"EnableGlow":false,"EnableOutline":false,"EnableShadow":false,"Id":{"name":"fnt_hud","path":"fonts/fnt_hud/fnt_hud.yy",},"resourceType":"AssetTextKeyframe","resourceVersion":"2.0","Text":"Tu aventura","Wrap":false,},
             },"Disabled":false,"id":"d6089b58-0218-49b8-bb5e-c7fc51eb04c7","IsCreationKey":false,"Key":0.0,"Length":70.0,"resourceType":"Keyframe<AssetTextKeyframe>","resourceVersion":"2.0","Stretch":false,},
         ],"resourceType":"KeyframeStore<AssetTextKeyframe>","resourceVersion":"2.0",},"modifiers":[],"name":"Text Track 1","resourceType":"GMTextTrack","resourceVersion":"2.0","trackColour":4282968306,"tracks":[
         {"$GMColourTrack":"","%Name":"blend_multiply","builtinName":10,"events":[],"inheritsTrackColour":true,"interpolation":1,"isCreationTrack":false,"keyframes":{"$KeyframeStore<ColourKeyframe>":"","Keyframes":[
@@ -137,7 +137,7 @@
       ],"traits":0,},
     {"$GMTextTrack":"","%Name":"Text Track 1","builtinName":0,"events":[],"inheritsTrackColour":true,"interpolation":1,"isCreationTrack":false,"keyframes":{"$KeyframeStore<AssetTextKeyframe>":"","Keyframes":[
           {"$Keyframe<AssetTextKeyframe>":"","Channels":{
-              "0":{"$AssetTextKeyframe":"","Alignment":0,"EnableEffects":false,"EnableGlow":false,"EnableOutline":false,"EnableShadow":false,"Id":{"name":"fnt_ui","path":"fonts/fnt_ui/fnt_ui.yy",},"resourceType":"AssetTextKeyframe","resourceVersion":"2.0","Text":"Elije a tu personaje.","Wrap":false,},
+              "0":{"$AssetTextKeyframe":"","Alignment":0,"EnableEffects":false,"EnableGlow":false,"EnableOutline":false,"EnableShadow":false,"Id":{"name":"fnt_hud","path":"fonts/fnt_hud/fnt_hud.yy",},"resourceType":"AssetTextKeyframe","resourceVersion":"2.0","Text":"Elije a tu personaje.","Wrap":false,},
             },"Disabled":false,"id":"f2cd8dd6-2841-4df1-af05-b806beeea910","IsCreationKey":false,"Key":0.0,"Length":90.0,"resourceType":"Keyframe<AssetTextKeyframe>","resourceVersion":"2.0","Stretch":false,},
         ],"resourceType":"KeyframeStore<AssetTextKeyframe>","resourceVersion":"2.0",},"modifiers":[],"name":"Text Track 1","resourceType":"GMTextTrack","resourceVersion":"2.0","trackColour":4282968306,"tracks":[
         {"$GMColourTrack":"","%Name":"blend_multiply","builtinName":10,"events":[],"inheritsTrackColour":true,"interpolation":1,"isCreationTrack":false,"keyframes":{"$KeyframeStore<ColourKeyframe>":"","Keyframes":[

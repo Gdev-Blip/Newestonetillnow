@@ -1,203 +1,142 @@
-dir_intencion = 0; // Dirección intencionada: -1 (izq), 1 (der), 0 (neutral)
 // ===================
 // CREATE EVENT (oPlayer)
 // ===================
-// --- FÍSICA & MOVIMIENTO ---
-accel = 0.5
-accel_final = 0
-accel_max = 50
-xspd               = 0;
-yspd               = 0;
-limite             = 9;
-aceleracion        = 1;
-originaccel = aceleracion;
-frenado            = 0.4;
-originlimite = limite;
-gravedad           = 2
-salto_fuerza       = -14;
-anti_trap_cd = 4;
+life = 120;
+max_life = life;
+/// @desc Inicialización del jugador con física, inercia, ataque, TP, wall slide, slopes y más
 
-puede_doble_salto  = true;
-originfuerzasalto = salto_fuerza;
-vida               = 120;
-max_vida = vida;
-global.cam_x = x;
-global.cam_y = y;
-global.cam_target_x = x;
-global.cam_target_y = y;
-saltoEnWall = 25;
-// --- COMBO & ATAQUE ---
+// === DIRECCIÓN DE INTENCIÓN ===
+dir_intencion = 0; // -1 (izq), 1 (der), 0 (neutral)
+
+// === SISTEMA DE FÍSICA Y MOVIMIENTO GENERAL ===
+speed_factor        = 1;    // velocidad base del juego (ajustable)
+hsp                 = 0;    // velocidad horizontal
+vsp                 = 0;    // velocidad vertical
+
+gravity             = 0.7  * speed_factor;
+max_fall_speed      = 12   * speed_factor;
+
+move_accel          = 0.5  * speed_factor;
+air_accel           = move_accel;
+friction            = 0.4  * speed_factor;
+max_hspeed          = 5    * speed_factor;
+
+jump_speed          = -12 * speed_factor;
+double_jump_speed   = -12  * speed_factor;
+coyote_time         = 6;
+jump_grace          = 6;
+max_jumps           = 3;
+
+jumps_done          = 0;
+coyote_timer        = 0;
+jump_buffer         = 0;
+
+on_wall_slide       = false;
+wall_slide_speed    = 2    * speed_factor;
+wall_slide_dir      = 0;
+
+direction_input     = 0;
+image_xscale        = 1;
+previous_direction  = image_xscale;
+
+en_suelo = place_meeting(x,y,oWall);
+
+// === AJUSTES PARA SLOPES ===
+slope_climb         = 8;      // altura máxima para escalar
+LimiteA             = 2;      // límite de escalada pendiente (redundante pero usado por otros scripts)
+
+// === SPRITE ALTURA (para correcciones de colisión) ===
+sprite_h_original   = sprite_get_height(sprite_index);
+
+// === ATAQUE Y COMBOS ===
 combo              = 0;
 combo_max          = 8;
 ataque_cooldown    = 1.25;
 ataque_anim_timer  = 1.6;
 esta_atacando      = false;
 
-
+atk_frame_speed    = 0.15;
+ataque_duracion    = 0.15;
 sprite_atk         = spr_ataque_completo;
+ataque_frame_count = sprite_get_number(sprite_atk);
 
-
-// --- RETROCESO DE ATAQUE ---
+// === RETROCESO DE ATAQUES ===
 retroceso_1        = 1;
 retroceso_2        = 3;
 retroceso_3        = 5;
 retroceso_4        = 8;
 
-// --- DASH ---
+// === DASH ===
 puede_dashear      = true;
+orig_puede_dashear = true;
 
 dash_en_proceso    = false;
 dash_timer         = 0;
+dash_duracion      = room_speed * 0.33;
 dash_cooldown      = 0;
-dash_vel           = 15;
-dash_duracion      = room_speed * 0.33;  // 0.25 segundos de dash
 dash_cooldown_max  = room_speed * 1;
-dash_sfx_played    = false; // inicializamos la flag para el audio
-orig_puede_dashear   = puede_dashear;
-orig_dash_cooldown   = dash_cooldown_max;
+dash_vel           = 15;
+dash_sfx_played    = false;
+
 orig_dash_timer      = dash_timer;
+orig_dash_cooldown   = dash_cooldown_max;
 
-// --- FOOTSTEPS ---
-footstep_timer     = 0;
+// === SUPER ATAQUE / CLICK DERECHO / RÁFAGA ===
+super_cooldown     = 0;
 
-// --- SONIDOS ---
-snd_ataque         = shooting;
-snd_salto          = jump;
-snd_footsteps      = footsteps;
-snd_doble_salto    = jump;
+is_bursting        = false;
+burst_shots        = 5;
+burst_shots_fired  = 0;
+burst_interval     = round(room_speed * 0.1);
+burst_timer        = 0;
+retroceso_burst    = 10;
 
-// --- ECO (activar en Room Start) ---
-echo_enabled       = false;
+// === MINI TELEPORT ===
+puede_tp          = true;
+saved_puede_tp    = puede_tp;
+tp_active         = false;
+tp_timer          = 0;
+tp_duration       = room_speed * 2;
+tp_target_x       = x;
+tp_target_y       = y;
+tp_filter_alpha   = 0.5;
+tp_cooldown       = 0;
+tp_cooldown_max   = room_speed * 10;
 
-// --- SHAKE & FLASH ---
+// === SALTO Y FÍSICA GUARDADAS ===
+salto_fuerza       = jump_speed;
+saved_salto_fuerza = salto_fuerza;
+aceleracion        = move_accel;
+saved_aceleracion  = aceleracion;
+limite             = max_hspeed;
+saved_limite       = limite;
+
+// === EFECTOS VISUALES Y DAÑO ===
 shake_time         = 10;
 shake_intensity    = 2;
 shake_offset_x     = 5;
 shake_offset_y     = 5;
 flash_alpha        = 0;
 
-// --- SUPER ATAQUE (click derecho) ---
-super_cooldown     = 0;
-
-// --- INVULNERABILIDAD & DAÑO ---
 invul_timer        = 0;
+dano_cooldown      = 0;
+tinte_rojo         = 0;
 dano_recibido      = 10;
-invulnera = false;
-// --- CONTROL DE FRAME-ATTACK ---
-atk_frame_speed    = 0.15;                // sub-imágenes por step
-ataque_duracion    = 0.15;                // duración total del ataque en segundos
-ataque_frame_count = sprite_get_number(sprite_atk);
+invulnera          = false;
+global.invulnera   = invulnera;
 
-// --- MANTENER CÓDIGO ORIGINAL PARA CREAR BALAS CON TECLA J (izq) ---
-// (no hace falta declarar nada extra aquí)
+// === FOOTSTEPS / PASOS ===
+footstep_timer     = room_speed * 0.5;
+footstep_count     = 0;
 
-// === BLOQUE NUEVO: VARIABLES DE RÁFAGA CLICK DERECHO ===
-is_bursting        = false;                       // flag para saber si estamos disparando ráfaga
-burst_shots        = 5;                           // cuántas balas suelta la ráfaga
-burst_shots_fired  = 0;                           // contador interno
-burst_interval     = round(room_speed * 0.1);      // intervalo (en steps) entre cada bala
-burst_timer        = 0;                           // timer para controlar cuándo disparar la próxima
-retroceso_burst    = 10;                          // magnitud del retroceso de la ráfaga
+// === SONIDOS ===
+snd_ataque         = shooting;
+snd_salto          = jump;
+snd_footsteps      = footsteps;
+snd_doble_salto    = jump;
 
-// --- VARIABLES DE TP (Mini Teleport) ---
-puede_tp = true;
-tp_active       = false;                 // ¿Estás en “modo aim”? (false = no)
-tp_timer        = 0;                     // Contador interno de 2 s mientras apuntas
-tp_duration     = room_speed * 2;        // 2 s = 2 * room_speed (steps)
-tp_target_x     = x;                     // Destino X (inicial = tu posición)
-tp_target_y     = y;                     // Destino Y (inicial = tu posición)
-tp_filter_alpha = 0.5;                   // Opacidad del filtro gris
-
-// --- COOLDOWN DE TP ---
-tp_cooldown      = 0;                    // Contador que irá bajando
-tp_cooldown_max  = room_speed * 10;      // 10 s = 10 * room_speed (steps)
-saved_limite = limite;
-saved_salto_fuerza  = salto_fuerza;
-saved_aceleracion   = aceleracion;
-saved_puede_dashear = puede_dashear;
-saved_puede_tp      = puede_tp;
-tinte_rojo = 0; // 0 = sin tinte, 1 = completamente rojo
-dano_cooldown = 0;
-dano_recibido = 10; // o lo que uses vos
-tinte_rojo = 0;
-
-// Variables del shake por pasos
-footstep_count = 0;
-footstep_timer = room_speed * 0.5; // o el valor que quieras usar como intervalo
-global.invulnera = invulnera
-en_suelo = place_meeting(x,y,oWall);
-dano_cooldown = 0;
-tinte_rojo = 0;
-/// @description Variables
-
-//Movimiento
-VX = 0
-
-velocidad = 1
-limiteV = 6
-FuerzaI = 1
-
-//Gravedad
-
-VY = 0
-FuerzaGWall = 0.3
-FuerzaG = 1
-limiteG = 16
-Salto = 12
-
-//Slope
-
-LimiteA = 2 //Limite de altura para subir escalera
-/// @desc Lists, structs and functions
-/// oPlayer: Movimiento con inercia, slopes, wall slide y doble salto mejorado
-
-/// oPlayer: Movimiento con inercia, slopes, wall slide y doble salto mejorado
-// --- Create Event de oPlayer
-// Guardamos alto del sprite para no recalcular cada frame
-sprite_h_original = sprite_get_height(sprite_index);
-/// oPlayer: Movimiento con inercia, slopes, wall slide y doble salto ajustable con factor de velocidad
-/// oPlayer: Movimiento con inercia ajustado para aire responsivo, slopes, wall slide y doble salto
-/// oPlayer: Movimiento con inercia ajustado para aire responsivo, slopes, wall slide y doble salto con corrección de embed
-
-// --- Create Event ---
-/// Factor global para ajustar todas las velocidades en el juego (1 = normal, >1 = más rápido)
-speed_factor        = 1;   // velocidad base del juego (ajusta este valor)
-
-/// Inicialización de variables de movimiento
-hsp                 = 0;   // velocidad horizontal actual
-vsp                 = 0;   // velocidad vertical actual
-
-// Configuración de físicas
-gravity             = 0.6  * speed_factor;   // gravedad
-max_fall_speed      = 12   * speed_factor;   // velocidad máxima de caída
-
-// Aceleración y fricción
-move_accel          = 0.5  * speed_factor;   // aceleración en suelo
-air_accel           = move_accel;           // aceleración en aire igual a suelo para mayor control
-friction            = 0.4  * speed_factor;   // fricción en suelo al soltar tecla
-max_hspeed          = 5    * speed_factor;   // velocidad horizontal máxima
-
-// Salto y doble salto
-jump_speed          = -10  * speed_factor;   // velocidad inicial de salto principal
-double_jump_speed   = -11  * speed_factor;   // velocidad de doble salto
-coyote_time         = 6;                    // cuadros de coyote
-jump_grace          = 6;                    // buffer de salto
-max_jumps           = 2;                    // saltos disponibles
-
-// Wall slide
-wall_slide_speed    = 2    * speed_factor;   // velocidad de deslizado en pared
-
-// Pendientes
-slope_climb         = 8;                    // altura máxima para subir pendientes
-
-// Estados internos
-direction_input     = 0;   // -1=izquierda,1=derecha,0=sin input
-coyote_timer        = 0;   // contador de coyote
-jump_buffer         = 0;   // buffer de salto
-jumps_done          = 0;   // saltos realizados
-on_wall_slide       = false;
-wall_slide_dir      = 0;
-
-// Control de flip\image_xscale       = 1;   // escala inicial del sprite
-previous_direction  = image_xscale;         // para detectar cambios de flip
-
+// === CÁMARA ===
+global.cam_x         = x;
+global.cam_y         = y;
+global.cam_target_x  = x;
+global.cam_target_y  = y;

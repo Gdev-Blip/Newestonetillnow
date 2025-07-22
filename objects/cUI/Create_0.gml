@@ -3,7 +3,6 @@
 /// =============================
 
 // Fuente y límites
-fnt_hud     = font_futurista;
 max_balas   = 8;
 hud_margin  = 20;
 hud_w       = 300;

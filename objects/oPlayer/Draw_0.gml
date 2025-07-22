@@ -9,8 +9,8 @@ if (tp_active) {
 
 draw_self();
 
-// Barra de vida
-var procent = clamp(vida / max_vida, 0, 1);
+// Barra de life
+var procent = clamp(life / max_life, 0, 1);
 var bar_w = 40, bar_h = 6;
 var x1 = x - bar_w * 0.5;
 var y1 = y - (sprite_h_original * 0.5) - 10;

@@ -2,7 +2,7 @@
   "$GMSprite":"v2",
   "%Name":"sIdleG",
   "bboxMode":2,
-  "bbox_bottom":124,
+  "bbox_bottom":126,
   "bbox_left":48,
   "bbox_right":75,
   "bbox_top":32,
